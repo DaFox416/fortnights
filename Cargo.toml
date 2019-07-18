@@ -1,0 +1,8 @@
+[package]
+name = "fortnights"
+version = "0.1.0"
+authors = ["DaFox416 <dvd_2014@hotmail.com>"]
+edition = "2018"
+
+[dependencies]
+read_input = "0.8.1"
