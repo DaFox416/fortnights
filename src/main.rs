@@ -20,7 +20,7 @@ fn main() {
 
     let mut register = Register::load_file(file);
     'shell: loop {
-        let incmd: String = input().msg(format!("F[{}]:${} > ", register.get_i(), register.get_current().get_remaining() )).get();
+        let incmd: String = input().msg(format!("F[{}]:${} > ", register.get_i(), register.get_current().get_remaining(true) )).get();
         if incmd=="" {
             continue 'shell;
         }

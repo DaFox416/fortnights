@@ -200,7 +200,7 @@ impl Register {
 		}
 		let price = input::<u64>()
 			.repeat_msg("Price: ")
-			.inside(1..=self.fortnights[self.i].get_remaining())
+			.inside(1..=self.fortnights[self.i].get_remaining(true))
 			.get();
 		let set : String = input()
 			.msg("Is set? Y/N: ")
@@ -216,7 +216,7 @@ impl Register {
 			.repeat_msg("Budget: ")
 			.get();
 		
-		let remainder = self.fortnights[self.i].get_remaining();
+		let remainder = self.fortnights[self.i].get_remaining(true);
 		println!("Adding last remainder: ${}", remainder);
 		budget += remainder;
 		self.fortnights[self.i].budget -= remainder;
@@ -242,7 +242,7 @@ impl Register {
 			.get();
 		let price = input::<u64>()
 			.repeat_msg("New price: ")
-			.inside(1..=(self.fortnights[self.i].get_remaining() + self.fortnights[self.i].expenses[i_exp].price))
+			.inside(1..=(self.fortnights[self.i].get_remaining(true) + self.fortnights[self.i].expenses[i_exp].price))
 			.default(self.fortnights[self.i].expenses[i_exp].price)
 			.get();
 		let status: String = input()

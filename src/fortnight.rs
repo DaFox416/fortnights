@@ -13,7 +13,8 @@ impl fmt::Display for Fortnight {
         for (i, ex) in self.expenses.iter().enumerate() {
             writeln!(f, "{}.- {}", i, ex )?;
         }
-        write!(f, "${:>5} Remaining", self.get_remaining())
+        writeln!(f, "${:>5} Remaining", self.get_remaining(false))?;
+        write!(f, "${:>5} Available", self.get_remaining(true))
     }
 }
 
@@ -52,10 +53,10 @@ impl Fortnight {
         line
     }
 
-    pub fn get_remaining(&self) -> u64 {
+    pub fn get_remaining(&self, count_all:bool) -> u64 {
         let mut sum = 0;
         for ex in self.expenses.iter() {
-            if ex.status {
+            if ex.status || count_all {
                 sum += ex.price;
             }
         }
