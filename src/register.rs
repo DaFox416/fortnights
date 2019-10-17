@@ -27,7 +27,7 @@ impl Register {
 		if content == "" {
 			let init = String::from("0:");
 			file.write_all(init.as_bytes()).unwrap();
-			content = String::from(init.as_ref());
+			content = String::from(init.as_ref() as &str);
 		}
 
 		let mut i=0;
@@ -135,6 +135,7 @@ impl Register {
 	}
 
 	pub fn set_cmd(&mut self, args: Vec<String>) {
+		self.list_cmd(Vec::new());
 		if args.is_empty() {
 			println!("Error: Missing arguments!");
 		} else {
@@ -201,8 +202,11 @@ impl Register {
 			.repeat_msg("Price: ")
 			.inside(1..=self.fortnights[self.i].get_remaining())
 			.get();
-		
-		let exp = Expense::from_line(format!("{}-{}-0", price, name).as_ref());
+		let set : String = input()
+			.msg("Is set? Y/N: ")
+			.get();
+		let c = if set == "Y" || set == "y" { '1' } else { '0' };
+		let exp = Expense::from_line(format!("{}-{}-{}", price, name, c).as_ref());
 		println!("Adding expense: {}", exp);
 		self.fortnights[self.i].expenses.push(exp);
 	}
@@ -224,8 +228,9 @@ impl Register {
 	}
 
 	pub fn edit_expense(&mut self) {
+		self.list_cmd(Vec::new());
 		let i_exp = input::<usize>()
-			.repeat_msg("Enter index: (Last by default)")
+			.repeat_msg("Enter index (Last by default): ")
 			.default(self.fortnights[self.i].expenses.len()-1)
 			.get();
 
@@ -237,12 +242,12 @@ impl Register {
 			.get();
 		let price = input::<u64>()
 			.repeat_msg("New price: ")
-			.inside(1..=self.fortnights[self.i].get_remaining())
+			.inside(1..=(self.fortnights[self.i].get_remaining() + self.fortnights[self.i].expenses[i_exp].price))
 			.default(self.fortnights[self.i].expenses[i_exp].price)
 			.get();
 		let status: String = input()
-			.msg("Set to OK? Y/Any (Default YES): ")
-			.default(String::from("Y"))
+			.msg("Set to OK? Y/N: ")
+			.default(if self.fortnights[self.i].expenses[i_exp].status { String::from("Y") } else { String::from("N") })
 			.get();
 		
 		self.fortnights[self.i].expenses[i_exp].status = status == "Y";
@@ -252,7 +257,7 @@ impl Register {
 
 	pub fn edit_fortnight(&mut self) {
 		let i_fort = input::<usize>()
-			.repeat_msg("Enter index: (Current by default)")
+			.repeat_msg("Enter index (Current by default): ")
 			.inside(0..self.fortnights.len())
 			.default(self.i)
 			.get();
@@ -266,6 +271,7 @@ impl Register {
 
 	pub fn remove_expense(&mut self) {
 		if self.fortnights[self.i].expenses.is_empty() { println!("No expense to remove!"); return; }
+		self.list_cmd(Vec::new());
 
 		let i_exp = input::<usize>()
 			.repeat_msg("Expense index: (Last by default)")

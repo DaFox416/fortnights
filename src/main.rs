@@ -28,14 +28,14 @@ fn main() {
         let (command, args) = get_command(incmd);
         
         match command.as_ref() {
-            "add" => register.add_cmd(args),
-            "edit" => register.edit_cmd(args),
-            "inc" => register.increase_cmd(args),
-            "ls" => register.list_cmd(args),
-            "rm" => register.remove_cmd(args),
-            "set" => register.set_cmd(args),
-            "st" => register.step_cmd(args),
-            "save" => register.save_in_file(),
+            "a" | "ad" | "add" => register.add_cmd(args),
+            "ed" | "edi" | "edit" => register.edit_cmd(args),
+            "i" | "in" | "inc" => register.increase_cmd(args),
+            "l" | "ls" => register.list_cmd(args),
+            "r" | "rm" => register.remove_cmd(args),
+            "sa" | "sav" | "save" => register.save_in_file(),
+            "se" | "set" => register.set_cmd(args),
+            "st" | "ste" | "step" => register.step_cmd(args),
             "ex" | "exi" | "exit" => { println!("Good bye!"); break 'shell; },
             _ => println!("Error: invalid command '{}'", command),
         }
@@ -73,7 +73,7 @@ fn get_files() -> Vec<String> {
 
 fn choose_file(files: Vec<String>) -> String {
     if files.len() == 1 {
-        String::from(files[0].as_ref())
+        String::from(files[0].as_ref() as &str)
     } else {
         'valid: loop {
             println!("Choose file to read... (ENTER for default.txt)");
@@ -92,7 +92,7 @@ fn choose_file(files: Vec<String>) -> String {
                 };
 
                 if n>0 && n<=files.len() {
-                    return String::from(files[n-1].as_ref());
+                    return String::from(files[n-1].as_ref() as &str);
                 } else {
                     println!("Invalid option, try again!");
                 }
